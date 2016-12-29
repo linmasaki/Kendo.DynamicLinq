@@ -106,9 +106,7 @@ namespace Kendo.DynamicLinq
             // Group By
             if ((group != null) && group.Any())
             {
-                var groupedQuery =
-                    queryable.ToList().GroupByMany(group.Select(p => p.Field).ToArray());
-
+                var groupedQuery = queryable.ToList().GroupByMany(group.Select(p => p.Field).ToArray());
                 result.Group = groupedQuery;
             }
             else
@@ -128,8 +126,7 @@ namespace Kendo.DynamicLinq
         /// <param name="sort">Specifies the current sort order.</param>
         /// <param name="filter">Specifies the current filter.</param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
-        public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip,
-            IEnumerable<Sort> sort, Filter filter)
+        public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, Filter filter)
         {
             return queryable.ToDataSourceResult(take, skip, sort, filter, null, null);
         }

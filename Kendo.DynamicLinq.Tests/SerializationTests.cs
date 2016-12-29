@@ -36,10 +36,10 @@ namespace Kendo.DynamicLinq.Tests
             {
                 var serializer = new DataContractJsonSerializer(typeof(DataSourceResult), new [] { typeof (Person) });
 
-                var people = new[] { new Person { Age = 30 }, new Person { Age = 30 } };
+                var people = new[] { new Person { Age = 50 }, new Person { Age = 20 } };
 
                 serializer.WriteObject(stream, people.AsQueryable().ToDataSourceResult(1, 2, null, null, new [] { new Aggregator { 
-                    Aggregate = "sum",
+                    Aggregate = "min",
                     Field = "Age"
                 } },null));
 
