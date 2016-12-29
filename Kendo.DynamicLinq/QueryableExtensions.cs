@@ -140,8 +140,7 @@ namespace Kendo.DynamicLinq
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
         public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, DataSourceRequest request)
         {
-            return queryable.ToDataSourceResult(request.Take, request.Skip, request.Sort, request.Filter, null,
-                request.Group);
+            return queryable.ToDataSourceResult(request.Take, request.Skip, request.Sort, request.Filter, null, request.Group);
         }
 
         public static IEnumerable<T> Append<T>(this IEnumerable<T> source, T item)
@@ -189,8 +188,7 @@ namespace Kendo.DynamicLinq
                     if (values[i] is DateTime)
                     {
                         var dateTimeFilterValue = (DateTime) values[i];
-                        values[i] = new DateTime(dateTimeFilterValue.Year, dateTimeFilterValue.Month,
-                            dateTimeFilterValue.Day, 0, 0, 0);
+                        values[i] = new DateTime(dateTimeFilterValue.Year, dateTimeFilterValue.Month, dateTimeFilterValue.Day, 0, 0, 0);
                     }
                 }
 
@@ -263,6 +261,7 @@ namespace Kendo.DynamicLinq
                 var objProps = new Dictionary<DynamicProperty, object>();
                 var groups = aggregates.GroupBy(g => g.Field);
                 Type type = null;
+
                 foreach (var group in groups)
                 {
                     var fieldProps = new Dictionary<DynamicProperty, object>();
@@ -270,23 +269,18 @@ namespace Kendo.DynamicLinq
                     {
                         var prop = typeof(T).GetProperty(aggregate.Field);
                         var param = Expression.Parameter(typeof(T), "s");
-                        var selector = (aggregate.Aggregate == "count") &&
-                                       (Nullable.GetUnderlyingType(prop.PropertyType) != null)
-                            ? Expression.Lambda(
-                                Expression.NotEqual(Expression.MakeMemberAccess(param, prop),
-                                    Expression.Constant(null, prop.PropertyType)), param)
-                            : Expression.Lambda(Expression.MakeMemberAccess(param, prop), param);
+                        var selector = (aggregate.Aggregate == "count") && (Nullable.GetUnderlyingType(prop.PropertyType) != null)
+                                       ? Expression.Lambda(Expression.NotEqual(Expression.MakeMemberAccess(param, prop),Expression.Constant(null, prop.PropertyType)), param)
+                                       : Expression.Lambda(Expression.MakeMemberAccess(param, prop), param);
                         var mi = aggregate.MethodInfo(typeof(T));
                         if (mi == null)
                         {
                             continue;
                         }
 
-                        var val = queryable.Provider.Execute(Expression.Call(null, mi,
-                                               (aggregate.Aggregate == "count") &&
-                                               (Nullable.GetUnderlyingType(prop.PropertyType) == null)
-                                                   ? new[] {queryable.Expression}
-                                                   : new[] {queryable.Expression, Expression.Quote(selector)}));
+                        var val = queryable.Provider.Execute(Expression.Call(null, mi, (aggregate.Aggregate == "count") && (Nullable.GetUnderlyingType(prop.PropertyType) == null)
+                                  ? new[] {queryable.Expression}
+                                  : new[] {queryable.Expression, Expression.Quote(selector)}));
 
                         fieldProps.Add(new DynamicProperty(aggregate.Aggregate, typeof(object)), val);
                     }
