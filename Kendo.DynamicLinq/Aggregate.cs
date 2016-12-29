@@ -56,8 +56,8 @@ namespace Kendo.DynamicLinq
 						  let parameters = method.GetParameters()
 						  let genericArguments = method.GetGenericArguments()
 						  where method.Name == methodName &&
-							genericArguments.Length == genericArgumentsCount &&
-							parameters.Select(p => p.ParameterType).SequenceEqual((Type[])methodTypes.Invoke(null, genericArguments))
+							genericArguments.Length == genericArgumentsCount
+							//&& parameters.Select(p => p.ParameterType).SequenceEqual((Type[])methodTypes.Invoke(null, genericArguments))
 						  select method;
 			return methods.FirstOrDefault();
 		}

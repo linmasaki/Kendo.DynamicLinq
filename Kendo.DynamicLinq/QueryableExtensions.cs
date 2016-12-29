@@ -22,8 +22,7 @@ namespace Kendo.DynamicLinq
         /// <param name="group">Specifies the current groups.</param>
         /// <param name="aggregates">Specifies the current aggregates.</param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
-        public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip,
-            IEnumerable<Sort> sort, Filter filter, IEnumerable<Aggregator> aggregates, IEnumerable<Sort> group)
+        public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, Filter filter, IEnumerable<Aggregator> aggregates, IEnumerable<Sort> group)
         {
             //the way this extension works it pages the records using skip and take 
             //in order to do that we need at least one sorted property
@@ -37,7 +36,7 @@ namespace Kendo.DynamicLinq
                     Dir = "desc"
                 };
                 PropertyInfo propertyInfo;
-                //look for proerty that is called id
+                //look for property that is called id
                 if (properties.Any(p => p.Name.ToLower() == "id"))
                 {
                     propertyInfo = properties.FirstOrDefault(p => p.Name.ToLower() == "id");
@@ -57,6 +56,10 @@ namespace Kendo.DynamicLinq
                     sortByObject.Field = propertyInfo.Name;
                 }
                 sort = new List<Sort> {sortByObject};
+            }
+            else
+            {
+                sort = new List<Sort>();
             }
             // Filter the data first
             queryable = Filter(queryable, filter);
