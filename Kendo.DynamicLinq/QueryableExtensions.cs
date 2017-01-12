@@ -11,7 +11,7 @@ namespace Kendo.DynamicLinq
     public static class QueryableExtensions
     {
         /// <summary>
-        ///     Applies data processing (paging, sorting, filtering and aggregates) over IQueryable using Dynamic Linq.
+        /// Applies data processing (paging, sorting, filtering and aggregates) over IQueryable using Dynamic Linq.
         /// </summary>
         /// <typeparam name="T">The type of the IQueryable.</typeparam>
         /// <param name="queryable">The IQueryable which should be processed.</param>
@@ -19,14 +19,13 @@ namespace Kendo.DynamicLinq
         /// <param name="skip">Specifies how many items to skip.</param>
         /// <param name="sort">Specifies the current sort order.</param>
         /// <param name="filter">Specifies the current filter.</param>
-        /// <param name="group">Specifies the current groups.</param>
         /// <param name="aggregates">Specifies the current aggregates.</param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
-        public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, Filter filter, IEnumerable<Aggregator> aggregates, IEnumerable<Sort> group)
+        public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, Filter filter, IEnumerable<Aggregator> aggregates, IEnumerable<Group> group)
         {
             //the way this extension works it pages the records using skip and take 
             //in order to do that we need at least one sorted property
-            if ((sort != null) && !sort.Any())
+            if (sort != null && !sort.Any())
             {
                 var elementType = queryable.ElementType;
                 var properties = elementType.GetProperties().ToList();
@@ -61,6 +60,7 @@ namespace Kendo.DynamicLinq
             {
                 sort = new List<Sort>();
             }
+
             // Filter the data first
             queryable = Filter(queryable, filter);
 
@@ -70,11 +70,11 @@ namespace Kendo.DynamicLinq
             // Calculate the aggregates
             var aggregate = Aggregate(queryable, aggregates);
 
-            if ((group != null) && group.Any())
+            if (group != null && group.Any())
             {
                 foreach (var source in group.Reverse())
                 {
-                    sort = sort.Append(new Sort
+                    sort = sort.Append(new Sort()
                     {
                         Field = source.Field,
                         Dir = source.Dir
@@ -97,16 +97,10 @@ namespace Kendo.DynamicLinq
                 Aggregates = aggregate
             };
 
-            //to use add this to your DataSource
-            //schema: {
-            //          groups: "Group",
-            //          data: "Data"
-            //}
-
             // Group By
-            if ((group != null) && group.Any())
+            if (group != null && group.Any())
             {
-                var groupedQuery = queryable.ToList().GroupByMany(group.Select(p => p.Field).ToArray());
+                var groupedQuery = queryable.ToList().GroupByMany(group);
                 result.Group = groupedQuery;
             }
             else
@@ -145,10 +139,8 @@ namespace Kendo.DynamicLinq
 
         public static IEnumerable<T> Append<T>(this IEnumerable<T> source, T item)
         {
-            foreach (var i in source)
-            {
+            foreach (T i in source)
                 yield return i;
-            }
 
             yield return item;
         }
@@ -157,10 +149,8 @@ namespace Kendo.DynamicLinq
         {
             yield return item;
 
-            foreach (var i in source)
-            {
+            foreach (T i in source)
                 yield return i;
-            }
         }
 
         private static IQueryable<T> Filter<T>(IQueryable<T> queryable, Filter filter)
@@ -168,7 +158,7 @@ namespace Kendo.DynamicLinq
             if ((filter != null) && (filter.Logic != null))
             {
                 // Collect a flat list of all filters
-                var filters = filter.All().Distinct().ToList();
+                var filters = filter.All();
 
                 // Get all filter values as array (needed by the Where method of Dynamic Linq)
                 var values = filters.Select(f => f.Value is string ? f.Value.ToString().ToLower() : f.Value).ToArray();
@@ -197,11 +187,11 @@ namespace Kendo.DynamicLinq
                 //Remove duplicate filters
                 //NOTE: we loop, and don't use .distinct for a reason!
                 //There is a miniscule chance different columns will filter by the same value, in which case using distinct will remove too many filters
-                for (var i = filters.Count - 1; i >= 0; i--)
+                for (int i = filters.Count - 1; i >= 0; i--)
                 {
                     var previousFilter = filters.ElementAtOrDefault(i - 1);
 
-                    if ((previousFilter != null) && filters[i].Equals(previousFilter))
+                    if (previousFilter != null && filters[i].Equals(previousFilter))
                     {
                         filters.RemoveAt(i);
 
@@ -209,9 +199,9 @@ namespace Kendo.DynamicLinq
                     }
                 }
                 var filtersList = filters.ToList();
-                for (var i = 0; i < filters.Count; i++)
+                for (int i = 0; i < filters.Count; i++)
                 {
-                    if (filters[i].Value is DateTime && (filters[i].Operator == "eq"))
+                    if (filters[i].Value is DateTime && filters[i].Operator == "eq")
                     {
                         var filterToEdit = filtersList[i];
 
@@ -309,7 +299,7 @@ namespace Kendo.DynamicLinq
 
         private static IQueryable<T> Sort<T>(IQueryable<T> queryable, IEnumerable<Sort> sort)
         {
-            if ((sort != null) && sort.Any())
+            if (sort != null && sort.Any())
             {
                 // Create ordering expression e.g. Field1 asc, Field2 desc
                 var ordering = string.Join(",", sort.Reverse().Select(s => s.ToExpression()));

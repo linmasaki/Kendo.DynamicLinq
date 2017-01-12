@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -25,7 +26,7 @@ namespace Kendo.DynamicLinq.Tests
 
                 serializer.WriteObject(stream, new[] { "foo" }.AsQueryable<string>().ToDataSourceResult(1, 0, null, null));
 
-                Assert.AreEqual("{\"Aggregates\":null,\"Data\":[\"foo\"],\"Total\":1}", Encoding.UTF8.GetString(stream.ToArray()));
+                Assert.AreEqual("{\"Aggregates\":null,\"Data\":[\"foo\"],\"Group\":null,\"Total\":1}", Encoding.UTF8.GetString(stream.ToArray()));
             }
         }
 
@@ -39,13 +40,12 @@ namespace Kendo.DynamicLinq.Tests
                 var people = new[] { new Person { Age = 50 }, new Person { Age = 20 } };
 
                 serializer.WriteObject(stream, people.AsQueryable().ToDataSourceResult(1, 2, null, null, new [] { new Aggregator { 
-                    Aggregate = "min",
+                    Aggregate = "sum",
                     Field = "Age"
-                } },null));
+                } }, null));
 
                 var json = Encoding.UTF8.GetString(stream.ToArray()).Replace("\"__type\":\"DynamicClass2:#\",", "");
-
-                Assert.AreEqual("{\"Aggregates\":{\"Age\":{\"sum\":60}},\"Data\":[],\"Total\":2}", json);
+                Assert.AreEqual("{\"Aggregates\":{\"Age\":{\"sum\":70}},\"Data\":[],\"Group\":null,\"Total\":2}", json);
             }
         }
     }

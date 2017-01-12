@@ -1,7 +1,6 @@
-﻿using System;
-using System.Linq;
+using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Kendo.DynamicLinq
@@ -17,6 +16,10 @@ namespace Kendo.DynamicLinq
         /// </summary>
         public IEnumerable Data { get; set; }
 
+        /// <summary>
+        /// Represents a single page of processed grouped data.
+        /// </summary>
+        public IEnumerable Group { get; set; }
 
         /// <summary>
         /// The total number of records available.
@@ -43,20 +46,7 @@ namespace Kendo.DynamicLinq
 
             return assembly.GetTypes().Where(t => t.Name.StartsWith("DynamicClass")).ToArray();
         }
-
-        /// <summary>
-        /// Specifies the requested sort order.
-        /// </summary>
-        public IEnumerable<Sort> Sort { get; set; }
-
-        /// <summary>
-        /// Specifies the requested grouping .
-        /// </summary>
-        public IEnumerable<Sort> Group { get; set; }
-
-        /// <summary>
-        /// Specifies the requested filter.
-        /// </summary>
-        public Filter Filter { get; set; }
     }
+
 }
+
