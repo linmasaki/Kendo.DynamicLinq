@@ -7,16 +7,14 @@ namespace Kendo.DynamicLinq
 {
     public static class EnumerableExtenstions
     {
-        public static dynamic GroupByMany<TElement>(this IEnumerable<TElement> elements,
-            IEnumerable<Group> groupSelectors)
+        public static dynamic GroupByMany<TElement>(this IEnumerable<TElement> elements, IEnumerable<Group> groupSelectors)
         {
             //create a new list of Kendo Group Selectors 
             var selectors = new List<GroupSelector<TElement>>(groupSelectors.Count());
             foreach (var selector in groupSelectors)
             {
                 //compile the Dynamic Expression Lambda for each one
-                var expression =
-                    DynamicExpression.ParseLambda(typeof(TElement), typeof(object), selector.Field);
+                var expression = DynamicExpression.ParseLambda(typeof(TElement), typeof(object), selector.Field);
                 //add it to the list
                 selectors.Add(new GroupSelector<TElement>
                 {
@@ -61,8 +59,7 @@ namespace Kendo.DynamicLinq
         //]
         //for more info check http://docs.telerik.com/kendo-ui/api/javascript/data/datasource#configuration-schema.groups
 
-        public static dynamic GroupByMany<TElement>(this IEnumerable<TElement> elements,
-            params GroupSelector<TElement>[] groupSelectors)
+        public static dynamic GroupByMany<TElement>(this IEnumerable<TElement> elements, params GroupSelector<TElement>[] groupSelectors)
         {
             if (groupSelectors.Length > 0)
             {

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kendo.DynamicLinq", "Kendo.DynamicLinq\Kendo.DynamicLinq.csproj", "{2BD75D53-E0EA-4995-8B0F-60AD709945AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kendo.DynamicLinq.Tests", "Kendo.DynamicLinq.Tests\Kendo.DynamicLinq.Tests.csproj", "{92FF629E-8872-4CCE-B558-F9FE437DDA86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kendo.DynamicLinq.ConsoleTest", "Kendo.DynamicLinq.ConsoleTest\Kendo.DynamicLinq.ConsoleTest.csproj", "{31F0FE02-A970-4949-9D10-7DAA22E42298}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{92FF629E-8872-4CCE-B558-F9FE437DDA86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92FF629E-8872-4CCE-B558-F9FE437DDA86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92FF629E-8872-4CCE-B558-F9FE437DDA86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31F0FE02-A970-4949-9D10-7DAA22E42298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31F0FE02-A970-4949-9D10-7DAA22E42298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31F0FE02-A970-4949-9D10-7DAA22E42298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31F0FE02-A970-4949-9D10-7DAA22E42298}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

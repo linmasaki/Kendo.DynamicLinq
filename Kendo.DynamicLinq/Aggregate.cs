@@ -56,45 +56,60 @@ namespace Kendo.DynamicLinq
 						  let parameters = method.GetParameters()
 						  let genericArguments = method.GetGenericArguments()
 						  where method.Name == methodName &&
-							genericArguments.Length == genericArgumentsCount
-							//&& parameters.Select(p => p.ParameterType).SequenceEqual((Type[])methodTypes.Invoke(null, genericArguments))
+							genericArguments.Length == genericArgumentsCount &&
+							parameters.Select(p => p.ParameterType).SequenceEqual((Type[])methodTypes.Invoke(null, genericArguments))
 						  select method;
 			return methods.FirstOrDefault();
 		}
 
 		private static Func<Type, Type[]> CountNullableFunc()
 		{
-			return (T) => new[]
-				{
-					typeof(IQueryable<>).MakeGenericType(T),
-					typeof(Expression<>).MakeGenericType(typeof(Func<,>).MakeGenericType(T, typeof(bool)))
-				};
-		}
+            return CountNullableDelegate;
+        }
 
-		private static Func<Type, Type[]> CountFunc()
+        private static Type[] CountNullableDelegate(Type t)
+        {
+            return new[]
+            {
+                typeof(IQueryable<>).MakeGenericType(t),
+                typeof(Expression<>).MakeGenericType(typeof(Func<,>).MakeGenericType(t, typeof(bool)))
+            };
+        }
+
+        private static Func<Type, Type[]> CountFunc()
 		{
 			return (T) => new[]
-				{
-					typeof(IQueryable<>).MakeGenericType(T)
-				};
+			{
+				typeof(IQueryable<>).MakeGenericType(T)
+			};
 		}
 
-		private static Func<Type, Type, Type[]> MinMaxFunc()
-		{
-			return (T, U) => new[]
-				{
-					typeof (IQueryable<>).MakeGenericType(T),
-					typeof (Expression<>).MakeGenericType(typeof (Func<,>).MakeGenericType(T, U))
-				};
-		}
+        private static Func<Type, Type, Type[]> MinMaxFunc()
+        {
+            return MinMaxDelegate;
+        }
 
-		private static Func<Type, Type[]> SumAvgFunc<U>()
-		{
-			return (T) => new[]
-				{
-					typeof (IQueryable<>).MakeGenericType(T),
-					typeof (Expression<>).MakeGenericType(typeof (Func<,>).MakeGenericType(T, typeof(U)))
-				};
-		}
-	}
+        private static Type[] MinMaxDelegate(Type a, Type b)
+        {
+            return new[]
+            {
+                typeof (IQueryable<>).MakeGenericType(a),
+                typeof (Expression<>).MakeGenericType(typeof (Func<,>).MakeGenericType(a, b))
+            };
+        }
+
+        private static Func<Type, Type[]> SumAvgFunc<TU>()
+        {
+            return SumAvgDelegate<TU>;
+        }
+
+        private static Type[] SumAvgDelegate<TU>(Type t)
+        {
+            return new[]
+            {
+                typeof (IQueryable<>).MakeGenericType(t),
+                typeof (Expression<>).MakeGenericType(typeof (Func<,>).MakeGenericType(t, typeof(TU)))
+            };
+        }
+    }
 }

@@ -23,8 +23,7 @@ namespace Kendo.DynamicLinq
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
         public static DataSourceResult ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, Filter filter, IEnumerable<Aggregator> aggregates, IEnumerable<Group> group)
         {
-            //the way this extension works it pages the records using skip and take 
-            //in order to do that we need at least one sorted property
+            //the way this extension works it pages the records using skip and take in order to do that we need at least one sorted property
             if (sort != null && !sort.Any())
             {
                 var elementType = queryable.ElementType;
@@ -194,7 +193,6 @@ namespace Kendo.DynamicLinq
                     if (previousFilter != null && filters[i].Equals(previousFilter))
                     {
                         filters.RemoveAt(i);
-
                         valuesList.RemoveAt(i);
                     }
                 }
